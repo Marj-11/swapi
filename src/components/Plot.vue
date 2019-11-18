@@ -26,57 +26,51 @@
 
     <!-- ----------------------------------------------------------------------------------------------------------------------------- -->
 
-    <div class="row">
-      <div class="col-12 d-flex justify-content-center">
-        <img
-          src="https://i.pinimg.com/originals/2f/48/54/2f4854e80863db8219a256c7a35bd034.png"
-          alt="logo"
-          @click="reset"
-        />
-      </div>
-    </div>
-    <div class="row">
-      <div class="col-3 d-flex justify-content-around">
-        <form>
-          <div class="form-group">
-            <input class="form-control" placeholder="Name" v-model="letter" @keyup="search(letter)" />
-          </div>
-          <div v-if="progress" class="spinner-border" role="status"></div>
-        </form>
-        <div>
-          <ul class="list-group">
-            <li
-              v-for="(name, index) in searchArray"
-              :key="index"
-              @click="add(index)"
-              class="list-group-item"
-            >{{ name.name }}</li>
-          </ul>
+    <div class="row row1">
+      <div class="col-12 d-flex justify-content-center mt-4">
+        <div class="d-flex flex-column">
+          <img
+            src="https://i.pinimg.com/originals/2f/48/54/2f4854e80863db8219a256c7a35bd034.png"
+            alt="logo"
+            @click="reset"
+          />
+          <form>
+            <div class="form-group">
+              <input
+                class="form-control"
+                placeholder="Search for Starwars character or planet..."
+                v-model="letter"
+                @keyup="search(letter)"
+              />
+            </div>
+            <div v-if="progress" class="spinner-border" role="status"></div>
+            <ul class="list-group">
+              <li
+                v-for="(name, index) in arrayNames"
+                :key="index"
+                @click="add(index)"
+                class="list-group-item"
+              >{{ name }}</li>
+            </ul>
+          </form>
         </div>
       </div>
-      <div class="plots col-9 d-flex flex-wrap">
+    </div>
+
+    <div class="row">
+      <div class="icons">
+        <i class="fas fa-walking human"></i>
+        <i class="fas fa-globe planet"></i>
+      </div>
+      <div class="plots col-12">
         <div class="plot" v-for="(person, index) in fieldArray" :key="index">
           <p v-if="checkIfPlanet(index)" class="blue">
             {{ person.name }}
-            <i
-              id="close_icon"
-              class="fas fa-times-circle"
-              @click="close(index)"
-              data-toggle="tooltip"
-              data-placement="top"
-              title="Close"
-            ></i>
+            <i id="close_icon" class="fas fa-times-circle" @click="close(index)"></i>
           </p>
           <p v-else class="red">
             {{ person.name }}
-            <i
-              id="close_icon"
-              class="fas fa-times-circle"
-              @click="close(index)"
-              data-toggle="tooltip"
-              data-placement="top"
-              title="Close"
-            ></i>
+            <i id="close_icon" class="fas fa-times-circle" @click="close(index)"></i>
           </p>
 
           <p v-if="checkIfPlanet(index)">
@@ -124,9 +118,12 @@
             ></i>
           </div>
         </div>
-        <h2 v-if="error !== ''" class="error">{{ error }}</h2>
-        <h2 v-if="networkError !== ''" class="error">{{networkError}}</h2>
       </div>
+      <h3 v-if="error !== ''" class="error">{{ error }}</h3>
+      <h6 class="created">
+        Created by
+        <span>Marj Hajyahya</span> 2019
+      </h6>
     </div>
   </div>
 </template>
@@ -138,7 +135,8 @@ import moment from "moment";
 export default {
   data() {
     return {
-      searchArray: [],
+      arrayObjects: [],
+      arrayNames: [],
       fieldArray: [],
       modalArray: [],
       letter: "",
@@ -153,41 +151,54 @@ export default {
       try {
         const trim = letters.trim();
         if (trim.length > 2) {
-          this.searchArray = [];
+          this.arrayObjects = [];
+          this.arrayNames = [];
           this.progress = true;
           const peopleURL = await axios.get(
             `https://swapi.co/api/people/?search=${letters}`
           );
           const people = peopleURL.data.results;
 
-          for (const key in people) {
-            const element = people[key];
-            this.searchArray.push(element);
+          for (let i = 0; i < people.length; i++) {
+            const elementObj = people[i];
+            this.arrayObjects.push(elementObj);
+            for (let i = 0; i < this.arrayObjects.length; i++) {
+              const elementName = this.arrayObjects[i].name;
+              if (!this.arrayNames.includes(elementName)) {
+                this.arrayNames.push(elementName);
+              }
+            }
           }
-
           const planetsURL = await axios.get(
             `https://swapi.co/api/planets/?search=${letters}`
           );
           const planets = planetsURL.data.results;
 
           for (const key in planets) {
-            const element = planets[key];
-            this.searchArray.push(element);
+            const elementObj = planets[key];
+            this.arrayObjects.push(elementObj);
+            for (let i = 0; i < this.arrayObjects.length; i++) {
+              const elementName = this.arrayObjects[i].name;
+              if (!this.arrayNames.includes(elementName)) {
+                this.arrayNames.push(elementName);
+              }
+            }
           }
-
           this.progress = false;
         } else {
-          this.searchArray = [];
+          this.arrayObjects = [];
+          this.arrayNames = [];
         }
       } catch (e) {
-        this.networkError = e;
+        this.error = e;
       }
     },
     add(i) {
-      if (this.fieldArray.length < 6) {
-        const element = this.searchArray[i];
+      if (this.fieldArray.length < 4) {
+        const element = this.arrayObjects[i];
         this.fieldArray.push(element);
-        this.searchArray = [];
+        this.arrayObjects = [];
+        this.arrayNames = [];
         this.letter = "";
         this.error = "";
         this.progress = false;
@@ -259,7 +270,8 @@ export default {
       }
     },
     reset() {
-      (this.searchArray = []),
+      (this.arrayObjects = []),
+        (this.arrayNames = []),
         (this.fieldArray = []),
         (this.modalArray = []),
         (this.letter = ""),
@@ -273,27 +285,65 @@ export default {
     let self = this;
     window.addEventListener("click", function(e) {
       if (!self.$el.contains(e.target)) {
-        self.searchArray = [];
+        self.arrayObjects = [];
         self.progress = false;
         self.error = "";
         self.networkError = "";
+        self.arrayNames = [];
       }
     });
   }
+  // watch: {
+  //   arrayObjects(){
+  //     for (let i = 0; i < this.arrayObjects.length; i++) {
+  //       const element = this.arrayObjects[i];
+  //       const name = element.name;
+  //       if (condition) {
+
+  //       }
+  //     }
+  //   }
+  // }
 };
 </script>
 
 <style>
+.row1 {
+  height: 170px;
+}
+.icons {
+  margin: 40px auto 0;
+}
+.human {
+  color: red;
+  font-size: 20px;
+  margin-right: 15px;
+}
+.planet {
+  color: rgb(0, 140, 255);
+  font-size: 20px;
+}
 .error {
   color: black;
   background-color: red;
+  position: absolute;
   border-radius: 3px;
-  margin-top: 7px;
+  bottom: 40px;
+  left: 31%;
   height: 30px;
-  width: 400px;
+  width: 500px;
   text-align: center;
   font-size: 18px;
   padding: 3px;
+}
+.created {
+  position: absolute;
+  bottom: 9px;
+  left: 41%;
+  color: rgb(100, 100, 100);
+}
+.created > span {
+  color: rgb(184, 0, 0);
 }
 .p_modal {
   color: black;
@@ -303,15 +353,13 @@ export default {
   border-bottom: black solid 1px;
 }
 .blue {
-  margin-top: 15px;
-  font-size: 25px;
-  margin-bottom: 5px;
+  font-size: 20px;
+  margin: 15px 5px 15px 15px;
   color: rgb(0, 140, 255);
 }
 .red {
-  margin-top: 15px;
-  font-size: 25px;
-  margin-bottom: 5px;
+  font-size: 20px;
+  margin: 15px 5px 15px 15px;
   color: red;
 }
 .modal-body {
@@ -325,8 +373,7 @@ export default {
 
 img {
   max-width: 200px;
-  margin-top: 20px;
-  margin-bottom: 20px;
+  margin: 20px auto 30px;
 }
 img:hover {
   cursor: pointer;
@@ -342,6 +389,9 @@ p {
   font-size: 20px;
   color: rgb(255, 255, 255);
   cursor: pointer;
+}
+#info_icon:hover {
+  color: rgb(92, 92, 92);
 }
 #close_icon {
   position: absolute;
@@ -375,19 +425,24 @@ p {
   width: 60px;
 }
 .plots {
-  padding-left: 30px;
+  margin: 35px 0 0 90px;
 }
 .plot {
   position: relative;
-  width: 230px;
-  height: 190px;
+  display: inline-block;
+  width: 220px;
+  height: 210px;
   background-color: rgb(0, 0, 0);
-  margin: 0px 60px 10px 0;
-  border-radius: 3px;
+  border-radius: 4px;
+  margin: 0 30px 0 20px;
 }
 .list-group-item {
-  padding: 6px;
-  width: 250px;
+  padding: 9px;
+  width: 450px;
+  z-index: 2;
+}
+.list-group {
+  position: absolute;
   top: 38px;
 }
 .list-group-item:hover {
@@ -400,7 +455,7 @@ p {
 }
 
 form {
-  position: absolute;
-  width: 250px;
+  position: relative;
+  width: 450px;
 }
 </style>

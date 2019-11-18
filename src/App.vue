@@ -20,7 +20,7 @@ export default {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  background-image: linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.4)),
+  background-image: linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.1)),
     url("./assets/background.jpg");
   background-size: cover;
   background-position: center;
