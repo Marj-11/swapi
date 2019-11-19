@@ -1,6 +1,5 @@
 <template>
   <div class="container-fluid">
-    <!-- ------------------------------------------------------------------------------------------ -->
     <div
       class="modal fade"
       id="exampleModalCenter"
@@ -24,8 +23,6 @@
       </div>
     </div>
 
-    <!-- ----------------------------------------------------------------------------------------------------------------------------- -->
-
     <div class="row row1">
       <div class="col-12 d-flex justify-content-center mt-4">
         <div class="d-flex flex-column">
@@ -41,6 +38,7 @@
                 placeholder="Search for Starwars character or planet..."
                 v-model="letter"
                 @keyup="search(letter)"
+                @click="inputReset"
               />
             </div>
             <div v-if="progress" class="spinner-border" role="status"></div>
@@ -62,7 +60,7 @@
         <i class="fas fa-walking human"></i>
         <i class="fas fa-globe planet"></i>
       </div>
-      <div class="plots col-12">
+      <div class="plots col-11">
         <div class="plot" v-for="(person, index) in fieldArray" :key="index">
           <p v-if="checkIfPlanet(index)" class="blue">
             {{ person.name }}
@@ -172,6 +170,7 @@ export default {
           const planetsURL = await axios.get(
             `https://swapi.co/api/planets/?search=${letters}`
           );
+
           const planets = planetsURL.data.results;
 
           for (const key in planets) {
@@ -184,27 +183,42 @@ export default {
               }
             }
           }
+          if (people.length >= 1 || planets.length >= 1) {
+            return (this.progress = false);
+          } else {
+            this.error = "No results found!";
+          }
           this.progress = false;
         } else {
-          this.arrayObjects = [];
           this.arrayNames = [];
+          this.error = "";
         }
       } catch (e) {
         this.error = e;
       }
     },
-    add(i) {
-      if (this.fieldArray.length < 4) {
+    async add(i) {
+      if (this.fieldArray === []) {
         const element = this.arrayObjects[i];
         this.fieldArray.push(element);
-        this.arrayObjects = [];
-        this.arrayNames = [];
-        this.letter = "";
-        this.error = "";
-        this.progress = false;
       } else {
-        this.error = "You cannot add more than 6 Cards";
-        return;
+        if (this.fieldArray.length < 4) {
+          const element = this.arrayObjects[i];
+          const tof = await this.checkdpt(element.name);
+          if (tof) {
+            this.fieldArray.push(element);
+            this.arrayObjects = [];
+            this.arrayNames = [];
+            this.letter = "";
+            this.error = "";
+            this.progress = false;
+          } else {
+            this.error = "Item is already exist!";
+          }
+        } else {
+          this.error = "You cannot add more than 4 Cards";
+          return;
+        }
       }
     },
     checkIfPlanet(i) {
@@ -277,8 +291,25 @@ export default {
         (this.letter = ""),
         (this.progress = false),
         (this.progModal = false),
-        (this.error = ""),
-        (this.networkError = "");
+        (this.error = "");
+    },
+    inputReset() {
+      (this.arrayNames = []),
+        (this.letter = ""),
+        (this.progress = false),
+        (this.progModal = false),
+        (this.error = "");
+    },
+    checkdpt(objName) {
+      if (this.fieldArray.length > 0) {
+        if (this.comp.includes(objName)) {
+          return false;
+        } else {
+          return true;
+        }
+      } else {
+        return true;
+      }
     }
   },
   created: function() {
@@ -292,18 +323,17 @@ export default {
         self.arrayNames = [];
       }
     });
+  },
+  computed: {
+    comp() {
+      const arr = [];
+      for (let i = 0; i < this.fieldArray.length; i++) {
+        const element = this.fieldArray[i];
+        arr.push(element.name);
+      }
+      return arr;
+    }
   }
-  // watch: {
-  //   arrayObjects(){
-  //     for (let i = 0; i < this.arrayObjects.length; i++) {
-  //       const element = this.arrayObjects[i];
-  //       const name = element.name;
-  //       if (condition) {
-
-  //       }
-  //     }
-  //   }
-  // }
 };
 </script>
 
