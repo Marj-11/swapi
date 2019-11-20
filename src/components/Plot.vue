@@ -132,9 +132,9 @@
         </div>
       </div>
     </div>
-    <h6 class="created d-flex justify-content-center">
-      Created by
-      <span>Marj Hajyahya</span> 2019
+    <h6 class="created">
+      Created by 
+      <span> Marj Hajyahya</span> 2019
     </h6>
   </div>
 </template>
