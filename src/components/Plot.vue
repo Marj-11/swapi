@@ -1,5 +1,5 @@
 <template>
-  <div class="container-fluid">
+  <div class="container">
     <div
       class="modal fade"
       id="exampleModalCenter"
@@ -22,25 +22,24 @@
         </div>
       </div>
     </div>
-
-    <div class="row row1">
-      <div class="col-12 d-flex justify-content-center mt-4">
-        <div class="d-flex flex-column">
+    <div class="main_row">
+      <div class="row d-flex justify-content-center">
+        <div class="d-flex-column justify-content-center col-sm-8">
           <img
+            class="d-flex justify-content-center"
             src="https://i.pinimg.com/originals/2f/48/54/2f4854e80863db8219a256c7a35bd034.png"
             alt="logo"
             @click="reset"
           />
-          <form>
-            <div class="form-group">
-              <input
-                class="form-control"
-                placeholder="Search for Starwars character or planet..."
-                v-model="letter"
-                @keyup="search(letter)"
-                @click="inputReset"
-              />
-            </div>
+          <form class="form-group">
+            <input
+              class="form-control"
+              placeholder="Search for Starwars character or planet..."
+              v-model="letter"
+              @keyup="search(letter)"
+              @click="inputReset"
+            />
+
             <div v-if="progress" class="spinner-border" role="status"></div>
             <ul class="list-group">
               <li
@@ -51,78 +50,92 @@
               >{{ name }}</li>
             </ul>
           </form>
-        </div>
-      </div>
-    </div>
-
-    <div class="row">
-      <div class="icons">
-        <i class="fas fa-walking human"></i>
-        <i class="fas fa-globe planet"></i>
-      </div>
-      <div class="plots col-11">
-        <div class="plot" v-for="(person, index) in fieldArray" :key="index">
-          <p v-if="checkIfPlanet(index)" class="blue">
-            {{ person.name }}
-            <i id="close_icon" class="fas fa-times-circle" @click="close(index)"></i>
-          </p>
-          <p v-else class="red">
-            {{ person.name }}
-            <i id="close_icon" class="fas fa-times-circle" @click="close(index)"></i>
-          </p>
-
-          <p v-if="checkIfPlanet(index)">
-            Diameter:
-            <span class="text-primary">{{ person.diameter }}</span>
-          </p>
-          <p v-else>
-            Height:
-            <span class="text-danger">{{ person.height }} cm</span>
-          </p>
-          <p v-if="checkIfPlanet(index)">
-            Gravity:
-            <span class="text-primary">{{ person.gravity}}</span>
-          </p>
-          <p v-else>
-            Mass:
-            <span class="text-danger">{{ person.mass }}</span>
-          </p>
-
-          <p v-if="checkIfPlanet(index)">
-            Rotation Period:
-            <span class="text-primary">{{ person.rotation_period }}</span>
-          </p>
-          <p v-else>
-            Eye color:
-            <span class="text-danger">{{ person.eye_color }}</span>
-          </p>
-
-          <p v-if="checkIfPlanet(index)">
-            Orbital Period:
-            <span class="text-primary">{{ person.orbital_period}}</span>
-          </p>
-          <p v-else>
-            Hair color:
-            <span class="text-danger">{{ person.hair_color }}</span>
-          </p>
-
-          <div class="icons mt-2">
-            <i
-              id="info_icon"
-              class="fas fa-info-circle"
-              data-toggle="modal"
-              @click="addToModal(index)"
-              data-target="#exampleModalCenter"
-            ></i>
+          <div class="icons d-flex justify-content-center">
+            <i class="fas fa-walking human"></i>
+            <i class="fas fa-globe planet"></i>
           </div>
         </div>
       </div>
-      <h3 v-if="error !== ''" class="error">{{ error }}</h3>
-      <h6 class="created">
-        Created by
-        <span>Marj Hajyahya</span> 2019
-      </h6>
+
+      <div class="row d-flex justify-content-center">
+        <div class="d-flex justify-content-center">
+          <div class="plots d-flex flex-wrap justify-content-center">
+            <div class="plot" v-for="(person, index) in fieldArray" :key="index">
+              <p v-if="checkIfPlanet(index)" class="blue">
+                {{ person.name }}
+                <i
+                  id="close_icon"
+                  class="fas fa-times-circle"
+                  @click="close(index)"
+                ></i>
+              </p>
+              <p v-else class="red">
+                {{ person.name }}
+                <i
+                  id="close_icon"
+                  class="fas fa-times-circle"
+                  @click="close(index)"
+                ></i>
+              </p>
+
+              <p v-if="checkIfPlanet(index)">
+                Diameter:
+                <span class="text-primary">{{ person.diameter }}</span>
+              </p>
+              <p v-else>
+                Height:
+                <span class="text-danger">{{ person.height }} cm</span>
+              </p>
+              <p v-if="checkIfPlanet(index)">
+                Gravity:
+                <span class="text-primary">{{ person.gravity}}</span>
+              </p>
+              <p v-else>
+                Mass:
+                <span class="text-danger">{{ person.mass }}</span>
+              </p>
+
+              <p v-if="checkIfPlanet(index)">
+                Rotation Period:
+                <span class="text-primary">{{ person.rotation_period }}</span>
+              </p>
+              <p v-else>
+                Eye color:
+                <span class="text-danger">{{ person.eye_color }}</span>
+              </p>
+
+              <p v-if="checkIfPlanet(index)">
+                Orbital Period:
+                <span class="text-primary">{{ person.orbital_period}}</span>
+              </p>
+              <p v-else>
+                Hair color:
+                <span class="text-danger">{{ person.hair_color }}</span>
+              </p>
+
+              <div class="icons mt-2">
+                <i
+                  id="info_icon"
+                  class="fas fa-info-circle"
+                  data-toggle="modal"
+                  @click="addToModal(index)"
+                  data-target="#exampleModalCenter"
+                ></i>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div id="last_row" class="row d-flex-column justify-content-center">
+        <div class="bottom d-flex-column justify-content-center col-sm-8">
+          <h5 v-if="error !== ''" class="error d-flex justify-content-center">{{ error }}</h5>
+        </div>
+      </div>
     </div>
+    <h6 class="created d-flex justify-content-center">
+      Created by
+      <span>Marj Hajyahya</span> 2019
+    </h6>
   </div>
 </template>
 
@@ -338,8 +351,10 @@ export default {
 </script>
 
 <style>
-.row1 {
-  height: 170px;
+#last_row {
+  text-align: end;
+}
+#plots_row {
 }
 .icons {
   margin: 40px auto 0;
@@ -356,20 +371,18 @@ export default {
 .error {
   color: black;
   background-color: red;
-  position: absolute;
   border-radius: 3px;
-  bottom: 40px;
-  left: 31%;
   height: 30px;
-  width: 500px;
-  text-align: center;
+  width: 100%;
   font-size: 18px;
   padding: 3px;
+  margin-top: 40px;
 }
 .created {
   position: absolute;
-  bottom: 9px;
-  left: 41%;
+  bottom: 15px;
+  left: 50%;
+  margin-left: -100px;
   color: rgb(100, 100, 100);
 }
 .created > span {
@@ -455,24 +468,23 @@ p {
   width: 60px;
 }
 .plots {
-  margin: 35px 0 0 90px;
 }
 .plot {
   position: relative;
-  display: inline-block;
   width: 220px;
   height: 210px;
   background-color: rgb(0, 0, 0);
   border-radius: 4px;
-  margin: 0 30px 0 20px;
+  margin: 30px 30px 0 20px;
 }
 .list-group-item {
   padding: 9px;
-  width: 450px;
   z-index: 2;
+  width: 100%;
 }
 .list-group {
   position: absolute;
+  width: 100%;
   top: 38px;
 }
 .list-group-item:hover {
@@ -486,6 +498,6 @@ p {
 
 form {
   position: relative;
-  width: 450px;
+  width: 100%;
 }
 </style>
