@@ -1,5 +1,6 @@
 <template>
   <div class="container">
+    <!-- modal -->
     <div
       class="modal fade"
       id="exampleModalCenter"
@@ -22,6 +23,7 @@
         </div>
       </div>
     </div>
+    <!-- logo -->
     <div class="main_row">
       <div class="row d-flex justify-content-center">
         <div class="d-flex-column justify-content-center col-sm-8">
@@ -31,6 +33,7 @@
             alt="logo"
             @click="reset"
           />
+          <!-- form -->
           <form class="form-group">
             <input
               class="form-control"
@@ -50,13 +53,14 @@
               >{{ name }}</li>
             </ul>
           </form>
+          <!-- upper-icons -->
           <div class="icons d-flex justify-content-center">
             <i class="fas fa-walking human"></i>
             <i class="fas fa-globe planet"></i>
           </div>
         </div>
       </div>
-
+    <!-- list -->
       <div class="row d-flex justify-content-center">
         <div class="d-flex justify-content-center">
           <div class="plots d-flex flex-wrap justify-content-center">
@@ -112,7 +116,7 @@
                 Hair color:
                 <span class="text-danger">{{ person.hair_color }}</span>
               </p>
-
+    <!-- modal-icon -->
               <div class="icons mt-2">
                 <i
                   id="info_icon"
@@ -126,12 +130,14 @@
           </div>
         </div>
       </div>
+      <!-- error -->
       <div id="last_row" class="row d-flex-column justify-content-center">
         <div class="bottom d-flex-column justify-content-center col-sm-8">
           <h5 v-if="error !== ''" class="error d-flex justify-content-center">{{ error }}</h5>
         </div>
       </div>
     </div>
+    <!-- lower-icons -->
     <h6 class="created">
       Created by 
       <span> Marj Hajyahya</span> 2019
@@ -248,7 +254,7 @@ export default {
         value.forEach(async element => {
           const link = await axios.get(element);
           const obj = link.data;
-          const obj2 = Object.values(obj)[0];
+          const obj2 = Object.values(obj)[0];          
           arr.push(obj2);
         });
         return arr;
