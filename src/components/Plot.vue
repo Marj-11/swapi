@@ -42,11 +42,11 @@
               @keyup="search(letter)"
               @click="inputReset"
             />
-
+            <!-- form list -->
             <div v-if="progress" class="spinner-border" role="status"></div>
             <ul class="list-group">
               <li
-                v-for="(name, index) in arrayNames"
+                v-for="(name, index) in listArray"
                 :key="index"
                 @click="add(index)"
                 class="list-group-item"
@@ -60,7 +60,7 @@
           </div>
         </div>
       </div>
-    <!-- list -->
+      <!-- list field-->
       <div class="row d-flex justify-content-center">
         <div class="d-flex justify-content-center">
           <div class="plots d-flex flex-wrap justify-content-center">
@@ -116,7 +116,7 @@
                 Hair color:
                 <span class="text-danger">{{ person.hair_color }}</span>
               </p>
-    <!-- modal-icon -->
+              <!-- modal-icon -->
               <div class="icons mt-2">
                 <i
                   id="info_icon"
@@ -139,8 +139,8 @@
     </div>
     <!-- lower-icons -->
     <h6 class="created">
-      Created by 
-      <span> Marj Hajyahya</span> 2019
+      Created by
+      <span>Marj Hajyahya</span> 2019
     </h6>
   </div>
 </template>
@@ -152,15 +152,15 @@ import moment from "moment";
 export default {
   data() {
     return {
-      arrayObjects: [],
-      arrayNames: [],
+      objectsArray: [],
+      listArray: [],
       fieldArray: [],
       modalArray: [],
       letter: "",
       progress: false,
       progModal: false,
       error: "",
-      networkError: ""
+      networkError: "",
     };
   },
   methods: {
@@ -168,8 +168,8 @@ export default {
       try {
         const trim = letters.trim();
         if (trim.length > 2) {
-          this.arrayObjects = [];
-          this.arrayNames = [];
+          this.objectsArray = [];
+          this.listArray = [];
           this.progress = true;
           const peopleURL = await axios.get(
             `https://swapi.co/api/people/?search=${letters}`
@@ -178,11 +178,11 @@ export default {
 
           for (let i = 0; i < people.length; i++) {
             const elementObj = people[i];
-            this.arrayObjects.push(elementObj);
-            for (let i = 0; i < this.arrayObjects.length; i++) {
-              const elementName = this.arrayObjects[i].name;
-              if (!this.arrayNames.includes(elementName)) {
-                this.arrayNames.push(elementName);
+            this.objectsArray.push(elementObj);
+            for (let i = 0; i < this.objectsArray.length; i++) {
+              const elementName = this.objectsArray[i].name;
+              if (!this.listArray.includes(elementName)) {
+                this.listArray.push(elementName);
               }
             }
           }
@@ -194,11 +194,11 @@ export default {
 
           for (const key in planets) {
             const elementObj = planets[key];
-            this.arrayObjects.push(elementObj);
-            for (let i = 0; i < this.arrayObjects.length; i++) {
-              const elementName = this.arrayObjects[i].name;
-              if (!this.arrayNames.includes(elementName)) {
-                this.arrayNames.push(elementName);
+            this.objectsArray.push(elementObj);
+            for (let i = 0; i < this.objectsArray.length; i++) {
+              const elementName = this.objectsArray[i].name;
+              if (!this.listArray.includes(elementName)) {
+                this.listArray.push(elementName);
               }
             }
           }
@@ -209,7 +209,7 @@ export default {
           }
           this.progress = false;
         } else {
-          this.arrayNames = [];
+          this.listArray = [];
           this.error = "";
         }
       } catch (e) {
@@ -218,16 +218,16 @@ export default {
     },
     async add(i) {
       if (this.fieldArray === []) {
-        const element = this.arrayObjects[i];
+        const element = this.objectsArray[i];
         this.fieldArray.push(element);
       } else {
         if (this.fieldArray.length < 4) {
-          const element = this.arrayObjects[i];
+          const element = this.objectsArray[i];
           const tof = await this.checkdpt(element.name);
           if (tof) {
             this.fieldArray.push(element);
-            this.arrayObjects = [];
-            this.arrayNames = [];
+            this.objectsArray = [];
+            this.listArray = [];
             this.letter = "";
             this.error = "";
             this.progress = false;
@@ -254,7 +254,8 @@ export default {
         value.forEach(async element => {
           const link = await axios.get(element);
           const obj = link.data;
-          const obj2 = Object.values(obj)[0];          
+          const obj2 = Object.values(obj)[0];
+
           arr.push(obj2);
         });
         return arr;
@@ -276,9 +277,10 @@ export default {
       const output = [];
       for (let [key, value] of Object.entries(obj)) {
         const newValue = this.formatDate(key, value);
-        const awaitValue = await this.checkIFLink(newValue);
+        const finalValue = await this.checkIFLink(newValue);
+        const finalKey = key.charAt(0).toUpperCase() + key.slice(1).replace("_", " ");
         setTimeout(() => {
-          output.push(`${key}: ${awaitValue}`);
+          output.push(`${finalKey}: ${finalValue}`);
         }, 4000);
       }
       this.modalArray.push(output);
@@ -303,8 +305,8 @@ export default {
       }
     },
     reset() {
-      (this.arrayObjects = []),
-        (this.arrayNames = []),
+      (this.objectsArray = []),
+        (this.listArray = []),
         (this.fieldArray = []),
         (this.modalArray = []),
         (this.letter = ""),
@@ -313,7 +315,7 @@ export default {
         (this.error = "");
     },
     inputReset() {
-      (this.arrayNames = []),
+      (this.listArray = []),
         (this.letter = ""),
         (this.progress = false),
         (this.progModal = false),
@@ -335,11 +337,11 @@ export default {
     let self = this;
     window.addEventListener("click", function(e) {
       if (!self.$el.contains(e.target)) {
-        self.arrayObjects = [];
+        self.objectsArray = [];
         self.progress = false;
         self.error = "";
         self.networkError = "";
-        self.arrayNames = [];
+        self.listArray = [];
       }
     });
   },
@@ -396,10 +398,11 @@ export default {
 }
 .p_modal {
   color: black;
+
 }
 .plot_modal {
-  padding: 1px;
-  border-bottom: black solid 1px;
+  padding: 2px;
+  border-bottom: black solid 0.7px;
 }
 .blue {
   font-size: 20px;
@@ -413,11 +416,10 @@ export default {
 }
 .modal-body {
   justify-content: center;
-
   height: 510px;
 }
 .modal-content {
-  padding-right: 5px;
+  padding-right: 15px;
 }
 
 img {
@@ -473,8 +475,7 @@ p {
   height: 60px;
   width: 60px;
 }
-.plots {
-}
+
 .plot {
   position: relative;
   width: 220px;
@@ -501,7 +502,6 @@ p {
   background-color: rgb(175, 123, 27);
   cursor: pointer;
 }
-
 form {
   position: relative;
   width: 100%;
