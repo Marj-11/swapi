@@ -362,8 +362,6 @@ export default {
 #last_row {
   text-align: end;
 }
-#plots_row {
-}
 .icons {
   margin: 40px auto 0;
 }
@@ -384,7 +382,7 @@ export default {
   width: 100%;
   font-size: 18px;
   padding: 3px;
-  margin-top: 40px;
+  margin-top: 25px;
 }
 .created {
   position: absolute;
@@ -416,7 +414,7 @@ export default {
 }
 .modal-body {
   justify-content: center;
-  height: 510px;
+  height: 518px;
 }
 .modal-content {
   padding-right: 15px;
@@ -471,7 +469,7 @@ p {
 #spinner-modal {
   position: absolute;
   top: 43%;
-  left: 43%;
+  left: 45%;
   height: 60px;
   width: 60px;
 }

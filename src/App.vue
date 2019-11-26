@@ -1,16 +1,15 @@
 <template>
   <div id="app">
-    <plot />
+
+    <router-view></router-view>
   </div>
 </template>
 
 <script>
-import Plot from "./components/Plot.vue";
-
 export default {
   name: "app",
   components: {
-    Plot
+ 
   }
 };
 </script>
